@@ -1,0 +1,10 @@
+rules_version = '2';
+
+// PDF 업로드·다운로드는 서버(Admin SDK)만 수행한다.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

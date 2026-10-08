@@ -1,0 +1,14 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "apphosting": {
+    "backendId": "worksheet-grader",
+    "rootDir": ".",
+    "ignore": ["node_modules", ".git", ".next", "firebase-debug.log", "firebase-debug.*.log", "functions"]
+  }
+}
