@@ -54,5 +54,22 @@ export function handleError(error: unknown) {
     return Response.json({ error: error.message }, { status: error.status });
   }
   console.error(error);
+  // 설정 문제는 교사가 원인을 알 수 있게 알려 준다(비밀 값은 포함하지 않음).
+  const message = error instanceof Error ? error.message : "";
+  if (message.includes("Could not load the default credentials")) {
+    return Response.json(
+      { error: "서버가 Firebase에 접근할 권한이 없습니다. 서비스 계정(GOOGLE_APPLICATION_CREDENTIALS) 설정을 확인해 주세요." },
+      { status: 500 },
+    );
+  }
+  if (/database \(default\) does not exist/i.test(message)) {
+    return Response.json({ error: "Firestore 데이터베이스가 아직 만들어지지 않았습니다. Firebase 콘솔에서 만들어 주세요." }, { status: 500 });
+  }
+  if (/bucket does not exist|specified bucket/i.test(message)) {
+    return Response.json({ error: "Storage 버킷이 없습니다. Firebase 콘솔에서 Storage를 시작해 주세요." }, { status: 500 });
+  }
+  if (/requires an index/i.test(message)) {
+    return Response.json({ error: "Firestore 색인이 필요합니다. `firebase deploy --only firestore`로 색인을 배포해 주세요." }, { status: 500 });
+  }
   return Response.json({ error: "서버 오류가 발생했습니다." }, { status: 500 });
 }
